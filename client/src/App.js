@@ -12,9 +12,9 @@ import {
 const App = () => {
 
   // State for retrieving player ID numbers from roster endpoint
-  const [currenntBalance, setCurrentBalance] = useState(null)
+  const [currentBalance, setCurrentBalance] = useState(null)
   const [transactions, setTransactions] = useState([]);
-  const [editTransaction, setEditTransaction] = useState([])
+
   useEffect(() => {
     axios.get(`http://localhost:5000/transactions`)
       .then(
@@ -50,7 +50,7 @@ const App = () => {
             <EditTransaction transactions={transactions} />
           </Route>
           <Route exact path="/">
-            <List transactions={transactions} currenntBalance={currenntBalance} />
+            <List transactions={transactions} currentBalance={currentBalance} />
           </Route>
         </Switch>
 
@@ -59,21 +59,21 @@ const App = () => {
   )
 }
 
-const List = ({ transactions, currenntBalance }) => {
+const List = ({ transactions, currentBalance }) => {
   return (
     <div>
-      <h1>Current balance: {currenntBalance}</h1>
+      <h1>Current balance: {currentBalance}</h1>
 
       {transactions.map((transaction) =>
-        <div className="transaction-li">
-          <li>{`
-  Concept = ${transaction.concept} - 
-  Amount = ${transaction.amount} - 
-  Type = ${transaction.type}`}
+        <div className="transaction-element">
+          <li> <label className="label-list" htmlFor="">Concept: </label>
+            {transaction.concept}
+            <label className="label-list" htmlFor="">Amount: </label> {transaction.amount}
+            <label className="label-list" htmlFor="">Type: </label> {transaction.type}
           </li>
 
           <button className=" button-edit">
-            <Link to={`/edit/${transaction.id}`}>Edit</Link>
+            <Link className="links" to={`/edit/${transaction.id}`}>Edit</Link>
           </button>
         </div>
       )}
@@ -89,12 +89,12 @@ const EditTransaction = ({ transactions }) => {
       {transactions.filter(transaction => transaction.id == id).map((transaction) =>
         <div className="">
           <form action="">
-            <label for="fname">Concept</label><br />
-            <input type="text" id="fname" name="fname" value={transaction.concept} /><br />
-            <label for="fname">Amount</label><br />
-            <input type="text" id="fname" name="fname" value={transaction.amount} /><br />
-            <label for="fname">Date</label><br />
-            <input type="text" id="fname" name="fname" value={transaction.date} /><br />
+            <label for="concept">Concept</label><br />
+            <input type="text" id="concept" name="concept" value={transaction.concept} /><br />
+            <label for="amount">Amount</label><br />
+            <input type="text" id="amount" name="amount" value={transaction.amount} /><br />
+            <label for="date">Date</label><br />
+            <input type="text" id="date" name="date" value={transaction.date} /><br />
             <input type="submit" />
           </form>
         </div>
@@ -104,21 +104,45 @@ const EditTransaction = ({ transactions }) => {
 }
 
 const CreateTransaction = () => {
+  const [formValues, setFormValues] = useState({
+    concept: "",
+    amount: 0,
+    type: 0,
+    date: ""
+  })
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    const data = { formValues };
+    axios
+      .post("http://localhost:5000/transactions", data)
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
+
+  const handleInputChange = (e) => {
+    e.preventDefault()
+    setFormValues({ ...formValues, [e.target.name]: e.target.value })
+  }
+
+
   return (
     <div>
       <h1>Create transaction</h1>
       <div className="">
-        <form action="">
-          <label for="fname">Concept</label><br />
-          <input type="text" id="fname" name="fname" /><br />
-          <label for="fname">Amount</label><br />
-          <input type="text" id="fname" name="fname" /><br />
-          <label for="fname">Date</label><br />
-          <input type="text" id="fname" name="fname" /><br />
-          <input type="radio" id="male" name="gender" value="male" />
-          <label for="male">income</label><br />
-          <input type="radio" id="female" name="gender" value="female" />
-          <label for="female">Outcome</label><br />
+        <form onSubmit={handleSubmit} action="">
+          <label for="concept">Concept</label><br />
+          <input type="text" id="concept" name="concept" onChange={handleInputChange} /><br />
+          <label for="amount">Amount</label><br />
+          <input type="text" id="amount" name="amount" onChange={handleInputChange} /><br />
+          <label for="date">Date</label><br />
+          <input type="text" id="date" name="date" onChange={handleInputChange} /><br />
+
+          <input type="radio" id="1" name="type" value="1" onChange={handleInputChange} />
+          <label for="1">income</label><br />
+          <input type="radio" id="2" name="type" value="2" onChange={handleInputChange} />
+          <label for="2">Outcome</label><br />
+
           <input type="submit" />
         </form>
       </div>
