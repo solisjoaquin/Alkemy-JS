@@ -20,3 +20,14 @@
   margin-left: 10px;
 }
 
+.links{
+  color: white;
+  text-decoration: none;
+  margin: 5px;
+  padding: 5px;
+}
+
+ul {
+  display: flex;
+  list-style-type: none;
+}
