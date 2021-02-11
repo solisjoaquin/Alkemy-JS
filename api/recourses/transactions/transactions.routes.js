@@ -1,11 +1,10 @@
 const express = require("express");
-const _ = require('underscore')
-const transactions = require('../../../database').transactions
 
 var { transaction } = require('../../../database/models');
 
 const transactionsRouter = express.Router()
 
+// show all transactions
 transactionsRouter.get('/', (req, res) => {
     transaction.findAll()
         .then(transaction => {
@@ -16,6 +15,7 @@ transactionsRouter.get('/', (req, res) => {
         })
 })
 
+// send a new transaction
 transactionsRouter.post('/', (req, res) => {
     let newTransaction = req.body
 
@@ -31,14 +31,14 @@ transactionsRouter.post('/', (req, res) => {
 
 })
 
-
+// get an specific transaction
 transactionsRouter.get('/:id', (req, res) => {
 
     transaction.findByPk(req.params.id)
         .then((result) => res.json(result))
 })
 
-
+// update a transaction
 transactionsRouter.put('/:id', (req, res) => {
     let updatedTransaction = req.body
 
@@ -50,7 +50,7 @@ transactionsRouter.put('/:id', (req, res) => {
         }).then((result) => res.redirect('/transactions/' + req.params.id))
 })
 
-
+// delete a transaction
 transactionsRouter.delete('/:id', (req, res) => {
     transaction.destroy(
         {
