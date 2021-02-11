@@ -1,0 +1,22 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+}
+.transaction-li {
+  display: flex;
+  padding: 10px;
+}
+.button-edit {
+  margin-left: 10px;
+}
+

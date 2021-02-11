@@ -4,6 +4,7 @@ var { transaction } = require('../../../database/models');
 
 const transactionsRouter = express.Router()
 
+
 // show all transactions
 transactionsRouter.get('/', (req, res) => {
     transaction.findAll()
