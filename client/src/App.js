@@ -5,12 +5,16 @@ import './App.css'
 const App = () => {
 
   // State for retrieving player ID numbers from roster endpoint
+  const [currenntBalance, setCurrentBalance] = useState(null)
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     axios.get(`http://localhost:5000/transactions`)
       .then(
-        res => setTransactions(res.data)
+        res => (
+          setCurrentBalance(res.data.meta.currentBalance),
+          setTransactions(res.data.data)
+        )
       )
       .catch(err => {
         console.log('Error : ' + err);
@@ -20,7 +24,7 @@ const App = () => {
 
   return (
     <div className="App-header">
-      <h1>transactions</h1>
+      <h1>Current balance: {currenntBalance}</h1>
       { transactions.map((transaction) =>
         <div className="transaction-li">
           <li>{`

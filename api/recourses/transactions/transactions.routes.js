@@ -9,7 +9,20 @@ const transactionsRouter = express.Router()
 transactionsRouter.get('/', (req, res) => {
     transaction.findAll()
         .then(transaction => {
-            res.send(transaction)
+            //res.send(transaction)
+
+            res.json({
+                meta: {
+                    status: 200,
+                    numberOfTransactions: transaction.length,
+                    currentBalance: transaction.reduce((total, product) =>
+                        (product.type == 1 ? (total += product.amount) : (total -= product.amount)), 0),
+                    types: { "1": "income", "2": "outcome" },
+                    url: "/transactions",
+                },
+                data: transaction,
+            });
+
         })
         .catch(error => {
             console.log(error);
