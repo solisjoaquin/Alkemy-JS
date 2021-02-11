@@ -2,64 +2,62 @@ const express = require("express");
 const _ = require('underscore')
 const transactions = require('../../../database').transactions
 
+var { transaction } = require('../../../database/models');
+
 const transactionsRouter = express.Router()
 
 transactionsRouter.get('/', (req, res) => {
-    res.json(transactions)
+    transaction.findAll()
+        .then(transaction => {
+            res.send(transaction)
+        })
+        .catch(error => {
+            console.log(error);
+        })
 })
 
 transactionsRouter.post('/', (req, res) => {
     let newTransaction = req.body
 
-    if (!newTransaction.amount) {
+    if (!newTransaction.amount || !newTransaction.type || !newTransaction.concept) {
         res.status(400).send("missing data")
         return
     }
-    newTransaction.id = Math.floor(Math.random() * 1000)
-    transactions.push(newTransaction)
-    res.status(201).json(newTransaction)
+
+    transaction.create(newTransaction)
+        .then(newTransaction => {
+            return res.redirect('/transactions/' + newTransaction.id)
+        })
+
 })
 
 
 transactionsRouter.get('/:id', (req, res) => {
-    for (let transaction of transactions) {
-        if (transaction.id = req.params.id) {
-            res.json(transaction)
-            return
-        }
-    }
-    res.status(404).send(`error`)
+
+    transaction.findByPk(req.params.id)
+        .then((result) => res.json(result))
 })
 
 
 transactionsRouter.put('/:id', (req, res) => {
-    let id = req.params.id
-    let replacedValue = req.body
-    if (!replacedValue.amount) {
-        res.status(400).send("missing data")
-        return
-    }
-    let index = _.findIndex(transactions, transaction => transaction.id == id)
+    let updatedTransaction = req.body
 
-    if (index != -1) {
-        replacedValue.id = id
-        transactions[index] = replacedValue
-        res.status(200).json(replacedValue)
-    } else {
-        res.status(404).send("That transaction doesn't match")
-    }
+    transaction.update(updatedTransaction,
+        {
+            where: {
+                id: req.params.id
+            }
+        }).then((result) => res.redirect('/transactions/' + req.params.id))
 })
 
 
 transactionsRouter.delete('/:id', (req, res) => {
-    let indexToDelete = _.findIndex(transactions, transaction => transaction.id == req.params.id)
-
-    if (indexToDelete === -1) {
-        res.status(404).send("Can't delete")
-        return
-    }
-    let deleted = transactions.splice(indexToDelete, 1)
-    res.json(deleted)
+    transaction.destroy(
+        {
+            where: {
+                id: req.params.id
+            }
+        }).then((result) => res.redirect('/transactions/'))
 })
 
 module.exports = transactionsRouter
