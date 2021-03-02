@@ -83,12 +83,16 @@ const List = ({ transactions, currentBalance }) => {
 
 const EditTransaction = ({ transactions }) => {
   const { id } = useParams()
+  const handleSubmit = (e) => {
+    console.log()
+  }
+
   return (
     <div>
       <h1>Edit transaction</h1>
       {transactions.filter(transaction => transaction.id == id).map((transaction) =>
         <div className="">
-          <form action="">
+          <form onSubmit={handleSubmit} action="">
             <label for="concept">Concept</label><br />
             <input type="text" id="concept" name="concept" value={transaction.concept} /><br />
             <label for="amount">Amount</label><br />
@@ -111,19 +115,39 @@ const CreateTransaction = () => {
     date: ""
   })
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const handleSubmit = (e) => {
+    /* e.preventDefault(); */
+
+    const url = 'http://localhost:5000/transactions';
     const data = { formValues };
-    axios
-      .post("http://localhost:5000/transactions", data)
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+    fetch(url, {
+      method: 'POST', // or 'PUT'
+      body: JSON.stringify(data), // data can be `string` or {object}!
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+      .catch(error => console.error('Error:', error))
+      .then(response => console.log('Success:', response));
   };
+
 
   const handleInputChange = (e) => {
     e.preventDefault()
     setFormValues({ ...formValues, [e.target.name]: e.target.value })
   }
+
+  /*   const url = 'http://localhost:5000/transactions';
+    const data = { formValues };
+    fetch(url, {
+    method: 'POST', 
+    body: JSON.stringify(data),
+    headers:{
+      'Content-Type': 'application/json'
+    }
+    }).then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response)); */
 
 
   return (

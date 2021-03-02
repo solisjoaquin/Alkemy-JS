@@ -16,6 +16,8 @@ const transactionsRouter = require('./api/recourses/transactions/transactions.ro
 
 app.use(bodyParser.json())
 
+app.get("/", (req, res) => res.send("Go to /transactions"))
+
 // all transactions will occur in this route
 app.use('/transactions', transactionsRouter)
 
