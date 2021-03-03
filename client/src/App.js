@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import './index.css';
 import './App.css'
 import {
   BrowserRouter as Router,
@@ -8,6 +9,7 @@ import {
   Link,
   useParams
 } from "react-router-dom";
+import Navbar from './components/Navbar';
 
 const App = () => {
 
@@ -31,28 +33,30 @@ const App = () => {
 
   return (
     <Router>
-      <div className="App-header">
-        <nav>
-          <ul>
-            <li>
-              <Link className="links" to="/">Home</Link>
-            </li>
-            <li>
-              <Link className="links" to="/create">New</Link>
-            </li>
-          </ul>
-        </nav>
-        <Switch>
-          <Route path="/create">
-            <CreateTransaction />
-          </Route>
-          <Route path="/edit/:id">
-            <EditTransaction transactions={transactions} />
-          </Route>
-          <Route exact path="/">
-            <List transactions={transactions} currentBalance={currentBalance} />
-          </Route>
-        </Switch>
+      <div>
+        <Navbar currentBalance={currentBalance} />
+
+        <main>
+          <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+
+            <div class="px-4 py-6 sm:px-0">
+              <div class="border-4 border-gray-200 rounded-lg h-96">
+
+                <Switch>
+                  <Route path="/new">
+                    <CreateTransaction />
+                  </Route>
+                  <Route path="/edit/:id">
+                    <EditTransaction transactions={transactions} />
+                  </Route>
+                  <Route exact path="/">
+                    <List transactions={transactions} currentBalance={currentBalance} />
+                  </Route>
+                </Switch>
+              </div>
+            </div>
+          </div>
+        </main>
 
       </div>
     </Router>
@@ -62,21 +66,73 @@ const App = () => {
 const List = ({ transactions, currentBalance }) => {
   return (
     <div>
-      <h1>Current balance: {currentBalance}</h1>
+      <div class="flex flex-col">
+        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Concept
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Amount
+                   </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Type
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
+                     </th>
+                    <th scope="col" class="relative px-6 py-3">
+                      <span class="sr-only">Edit</span>
+                    </th>
+                  </tr>
+                </thead>
 
-      {transactions.map((transaction) =>
-        <div className="transaction-element">
-          <li> <label className="label-list" htmlFor="">Concept: </label>
-            {transaction.concept}
-            <label className="label-list" htmlFor="">Amount: </label> {transaction.amount}
-            <label className="label-list" htmlFor="">Type: </label> {transaction.type}
-          </li>
+                {transactions.map((transaction) =>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
 
-          <button className=" button-edit">
-            <Link className="links" to={`/edit/${transaction.id}`}>Edit</Link>
-          </button>
+                          <div class="">
+                            <div class="text-sm font-medium text-gray-900">
+                              {transaction.concept}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">{transaction.amount}</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {transaction.type == 2 ?
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-green-800">
+                            {transaction.type}
+                          </span>
+                          :
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            {transaction.type}
+                          </span>
+                        }
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {(transaction.date)}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Link className="text-indigo-600 hover:text-indigo-900" to={`/edit/${transaction.id}`}>Edit</Link>
+                      </td>
+                    </tr>
+                  </tbody>
+                )}
+
+              </table>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -89,19 +145,48 @@ const EditTransaction = ({ transactions }) => {
 
   return (
     <div>
-      <h1>Edit transaction</h1>
+
+
       {transactions.filter(transaction => transaction.id == id).map((transaction) =>
-        <div className="">
-          <form onSubmit={handleSubmit} action="">
-            <label for="concept">Concept</label><br />
-            <input type="text" id="concept" name="concept" value={transaction.concept} /><br />
-            <label for="amount">Amount</label><br />
-            <input type="text" id="amount" name="amount" value={transaction.amount} /><br />
-            <label for="date">Date</label><br />
-            <input type="text" id="date" name="date" value={transaction.date} /><br />
-            <input type="submit" />
-          </form>
+        <div class="mt-5">
+          <div class="mt-5 md:mt-0 md:col-span-2">
+            <form action="#" method="POST">
+              <div class="shadow overflow-hidden sm:rounded-md">
+                <div class="px-4 py-5 bg-white sm:p-6">
+                  <div class="grid grid-cols-6 gap-6">
+
+                    <div class="col-span-6 sm:col-span-4">
+                      <label for="concept" class="block text-sm font-medium text-gray-700">Concept</label>
+                      <input type="text" name="concept" id="concept" autocomplete="email" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-500 rounded-md" value={transaction.concept} />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-4">
+                      <label for="amount" class="block text-sm font-medium text-gray-700">Amount</label>
+                      <input type="text" name="amount" id="amount" autocomplete="email" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-500 rounded-md" value={transaction.amount} />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-3">
+                      <label for="" class="block text-sm font-medium text-gray-700">Date</label>
+                      <input type="date" name="date" id="date" autocomplete="email" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-500 rounded-md" />
+                    </div>
+
+
+                  </div>
+                </div>
+                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                  <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Change
+            </button>
+                  <button type="submit" class="ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <Link to={`/delete/${transaction.id}`}>Delete</Link>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
         </div>
+
       )}
     </div>
   )
@@ -152,24 +237,52 @@ const CreateTransaction = () => {
 
   return (
     <div>
-      <h1>Create transaction</h1>
-      <div className="">
-        <form onSubmit={handleSubmit} action="">
-          <label for="concept">Concept</label><br />
-          <input type="text" id="concept" name="concept" onChange={handleInputChange} /><br />
-          <label for="amount">Amount</label><br />
-          <input type="text" id="amount" name="amount" onChange={handleInputChange} /><br />
-          <label for="date">Date</label><br />
-          <input type="text" id="date" name="date" onChange={handleInputChange} /><br />
 
-          <input type="radio" id="1" name="type" value="1" onChange={handleInputChange} />
-          <label for="1">income</label><br />
-          <input type="radio" id="2" name="type" value="2" onChange={handleInputChange} />
-          <label for="2">Outcome</label><br />
+      <div class="mt-5">
+        <div class="mt-5 md:mt-0 md:col-span-2">
+          <form action="/" method="POST">
+            <div class="shadow overflow-hidden sm:rounded-md">
+              <div class="px-4 py-5 bg-white sm:p-6">
+                <div class="grid grid-cols-6 gap-6">
 
-          <input type="submit" />
-        </form>
+
+                  <div class="col-span-6 sm:col-span-4">
+                    <label for="concept" class="block text-sm font-medium text-gray-700">Concept</label>
+                    <input type="text" name="concept" id="concept" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-500 rounded-md" placeholder="Shop" />
+                  </div>
+
+                  <div class="col-span-6 sm:col-span-4">
+                    <label for="amount" class="block text-sm font-medium text-gray-700">Amount</label>
+                    <input type="text" name="amount" id="amount" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-500 rounded-md" placeholder="3000" />
+                  </div>
+
+                  <div class="col-span-6 sm:col-span-3">
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" name="date" id="date" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-500 rounded-md" />
+                  </div>
+
+                  <div class="col-span-6 sm:col-span-4">
+                    <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                    <button type="button" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                      Input
+                    </button>
+                    <button type="button" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                      Output
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  Create
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
       </div>
+
     </div>
   )
 }
