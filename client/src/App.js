@@ -40,7 +40,7 @@ const App = () => {
           <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
 
             <div class="px-4 py-6 sm:px-0">
-              <div class="border-4 border-gray-200 rounded-lg h-96">
+              <div class="border-4 border-gray-200 rounded-lg ">
 
                 <Switch>
                   <Route path="/new">
@@ -110,11 +110,11 @@ const List = ({ transactions, currentBalance }) => {
                       <td class="px-6 py-4 whitespace-nowrap">
                         {transaction.type == 2 ?
                           <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-green-800">
-                            {transaction.type}
+                            expend.
                           </span>
                           :
                           <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            {transaction.type}
+                            income
                           </span>
                         }
                       </td>
@@ -264,10 +264,10 @@ const CreateTransaction = () => {
                   <div class="col-span-6 sm:col-span-4">
                     <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
                     <button type="button" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                      Input
+                      Income
                     </button>
                     <button type="button" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                      Output
+                      Expenditure
                     </button>
                   </div>
                 </div>
