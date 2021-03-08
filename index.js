@@ -11,7 +11,7 @@ app.use(cors(
     config.application.cors.server
 ));
 
-const transactionsRouter = require('./api/recourses/transactions/transactions.routes')
+const transactionsRouter = require('./api/resourses/transactions/transactions.routes')
 
 
 app.use(bodyParser.json())
